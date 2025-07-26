@@ -1,0 +1,90 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install EAS CLI
+      run: npm install -g @expo/eas-cli
+
+    - name: Create EAS configuration (if not exists)
+      run: |
+        if [ ! -f eas.json ]; then
+          echo "Creating basic eas.json configuration..."
+          cat > eas.json << EOF
+        {
+          "cli": {
+            "version": ">= 12.0.0"
+          },
+          "build": {
+            "development": {
+              "developmentClient": true,
+              "distribution": "internal"
+            },
+            "preview": {
+              "distribution": "internal"
+            },
+            "production": {}
+          },
+          "submit": {
+            "production": {}
+          }
+        }
+        EOF
+        fi
+
+    - name: Build Android APK
+      run: |
+        # Create output directory
+        mkdir -p build-output
+        
+        # Run the build command
+        eas build --platform android --local --non-interactive --output ./build-output/app.apk
+      env:
+        EXPO_NO_TELEMETRY: 1
+
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-apk-${{ github.sha }}
+        path: build-output/app.apk
+        retention-days: 30
+        
+    - name: Upload build logs (if build fails)
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: build-logs-${{ github.sha }}
+        path: |
+          ~/.expo/
+          build-output/
+        retention-days: 7 

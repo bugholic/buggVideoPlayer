@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "buggVideoPlayer",
-    "slug": "buggVideoPlayer",
+    "slug": "buggvideoplayer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -16,7 +16,11 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -45,6 +49,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "bb40ab85-f79d-43cf-aeb8-6187e6285af1"
+      }
+    },
+    "owner": "bugholic"
   }
 }

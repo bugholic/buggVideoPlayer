@@ -27,12 +27,12 @@ jobs:
       uses: expo/expo-github-action@v8
       with:
         eas-version: latest
-        token: ${{ secrets.EXPO_TOKEN }}
+        token: ${{ secrets.EAS_TOKEN_LOGIN }}
 
     - name: Build Android
       run: eas build --platform android --local --profile development
       env:
-        EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        EAS_TOKEN_LOGIN: ${{ secrets.EAS_TOKEN_LOGIN }}
 
     - name: Upload Android APK
       uses: actions/upload-artifact@v4

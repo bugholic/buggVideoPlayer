@@ -30,7 +30,7 @@ jobs:
         token: ${{ secrets.EAS_TOKEN_LOGIN }}
 
     - name: Build Android
-      run: eas build --platform android --local --profile development --non-interactive
+      run: eas build --platform android --local
       env:
         EAS_TOKEN_LOGIN: ${{ secrets.EAS_TOKEN_LOGIN }}
 
